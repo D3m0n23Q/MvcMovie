@@ -21,7 +21,16 @@ namespace MvcMovie.Controllers
         // GET: Movies
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Movie.ToListAsync());
+            try
+            {
+                List<Movie> _Movies = await _context.Movie.ToListAsync();
+                return View(_Movies);
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500);
+            }
+
         }
 
         // GET: Movies/Details/5
