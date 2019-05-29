@@ -23,8 +23,8 @@ namespace MvcMovie.Controllers
         {
             try
             {
-                List<Movie> _Movies = await _context.Movie.ToListAsync();
-                return View(_Movies);
+                var _Movies = _context.Movies.Select(x => x);
+                return View(await _Movies.ToListAsync());
             }
             catch(Exception e)
             {
@@ -41,7 +41,7 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie
+            var movie = await _context.Movies
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
@@ -81,7 +81,7 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie.FindAsync(id);
+            var movie = await _context.Movies.FindAsync(id);
             if (movie == null)
             {
                 return NotFound();
@@ -132,7 +132,7 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie
+            var movie = await _context.Movies
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
@@ -147,15 +147,15 @@ namespace MvcMovie.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movie.FindAsync(id);
-            _context.Movie.Remove(movie);
+            var movie = await _context.Movies.FindAsync(id);
+            _context.Movies.Remove(movie);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MovieExists(int id)
         {
-            return _context.Movie.Any(e => e.Id == id);
+            return _context.Movies.Any(e => e.Id == id);
         }
     }
 }
