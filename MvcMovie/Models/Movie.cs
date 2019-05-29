@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MvcMovie.Models
 {
+    [Table("Movie")]
     public class Movie
     {
         public int Id { get; set; }
