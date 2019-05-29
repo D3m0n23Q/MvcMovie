@@ -19,10 +19,12 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string movieGenre, string searchString)
         {
             try
             {
+                var _Genres = _context.Movies.Select(movie => movie.Genre).Distinct();
+
                 var _Movies = _context.Movies.Select(x => x);
 
                 if (!string.IsNullOrEmpty(searchString))
@@ -30,13 +32,31 @@ namespace MvcMovie.Controllers
                     _Movies = _Movies.Where(movie => movie.Title.Contains(searchString));
                 }
 
-                return View(await _Movies.ToListAsync());
+                if(!string.IsNullOrEmpty(movieGenre))
+                {
+                    _Movies = _Movies.Where(movie => string.Equals(movie.Genre, movieGenre));
+                }
+
+                var _MovieGenreVM = new MovieGenreViewModel
+                {
+                    Genres = new SelectList(await _Genres.ToListAsync()),
+                    Movies = await _Movies.ToListAsync()
+                };
+
+
+                return View(_MovieGenreVM);
             }
             catch(Exception e)
             {
                 return StatusCode(500);
             }
 
+        }
+
+        [HttpPost]
+        public string Index(string searchString, bool isUsed)
+        {
+            return $"Filter string: {searchString}";
         }
 
         // GET: Movies/Details/5
